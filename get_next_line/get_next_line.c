@@ -6,7 +6,7 @@
 /*   By: jvanden- <jvanden-@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 16:03:57 by eperaita          #+#    #+#             */
-/*   Updated: 2021/09/28 13:11:51 by jvanden-         ###   ########.fr       */
+/*   Updated: 2021/09/28 13:55:10 by jvanden-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char *ft_substr(char *str, int start, size_t len)
 	return (new);
 }
 
-char *purge_line_from_temp(char *temp, char *line)
+char *purge_line_from_temp(char *line, char *temp)
 {
 	char *new_temp;
 	int	len;
@@ -118,7 +118,7 @@ char *update_temp(char *temp, char *buff)
 	i = 0;
 	if (!temp)
 	{
-		temp = malloc (1);
+		temp = malloc(1);
 		temp[0] = '\0';
 	}
 	new = ft_join(temp, buff);
@@ -128,24 +128,17 @@ char *update_temp(char *temp, char *buff)
 
 char *read_to_temp(int fd, char *temp)
 {
-	char *buff;
+	char buff[BUFFER_SIZE + 1];
 	int bytes;
 
 	bytes = 1;
 	while (!find_line_break(temp) && bytes > 0)
 	{
-		buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		if (!buff)
-			return (0);
 		bytes = read(fd, buff, BUFFER_SIZE);
 		if ((bytes == 0 && !temp) || bytes == -1)
-		{
-			free(buff);
 			return (NULL);
-		}
 		buff[bytes] = '\0';
 		temp = update_temp(temp, buff);
-		free (buff);
 	}
 	return (temp);
 }
@@ -160,7 +153,6 @@ char *get_next_line(int fd)
 		return (0);
 	temp = read_to_temp(fd, temp);
 	line = extract_line_from_temp(line, temp);
-	temp = purge_line_from_temp(temp, line);
+	temp = purge_line_from_temp(line, temp);
 	return (line);
 }
-
