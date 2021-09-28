@@ -6,7 +6,7 @@
 /*   By: jvanden- <jvanden-@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 16:03:57 by eperaita          #+#    #+#             */
-/*   Updated: 2021/09/28 13:55:10 by jvanden-         ###   ########.fr       */
+/*   Updated: 2021/09/28 16:06:06 by jvanden-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,21 @@ char *find_line_break(char *str)
 	return (NULL);
 }
 
-char *ft_join(char *temp, char *buff)
+char *ft_join(char *str1, char *str2)
 {
 	char *new;
 	int i;
 	
 	i = 0;
-	if (!temp || !buff)
+	if (!str1 || !str2)
 		return(NULL);
-	new = malloc((ft_strlen(temp) + ft_strlen(buff) + 1) * sizeof(char));
+	new = malloc(sizeof(char) * (ft_strlen(str1) + ft_strlen(str2) + 1));
 	if (!new)
 		return (NULL);
-	while (*temp)
-		new[i++] = *temp++;
-	while (*buff)
-		new[i++] = *buff++;
+	while (*str1)
+		new[i++] = *str1++;
+	while (*str2)
+		new[i++] = *str2++;
 	new[i] = '\0';
 	return (new);
 }
@@ -83,34 +83,29 @@ char *ft_substr(char *str, int start, size_t len)
 char *purge_line_from_temp(char *line, char *temp)
 {
 	char *new_temp;
-	int	len;
-	int	start;
 
 	if (!find_line_break(temp))
 	{
 		free (temp);
 		return (NULL);
 	}
-	len = ft_strlen(temp) - ft_strlen(line);
-	start = ft_strlen(line);
-	new_temp = ft_substr(temp, start, len); 
+	new_temp = ft_substr(temp, ft_strlen(line), ft_strlen(temp) - ft_strlen(line)); 
 	free (temp);
 	return (new_temp);
 }
 
-char *extract_line_from_temp(char *line, char *temp)
+char *extract_line_from_temp(char *temp)
 {
-	size_t	len;
+	char *line;
 
-	len = 0;
-	if(find_line_break(temp))
+	if (find_line_break(temp))
 		line = ft_substr(temp, 0, ft_strlen(temp) - ft_strlen(find_line_break(temp)) + 1);
 	else
 		line = ft_substr(temp, 0, ft_strlen(temp));
 	return (line);
 }
 
-char *update_temp(char *temp, char *buff)
+char *update_temp(char *buff, char *temp)
 {
 	char *new;
 	int i;
@@ -138,7 +133,7 @@ char *read_to_temp(int fd, char *temp)
 		if ((bytes == 0 && !temp) || bytes == -1)
 			return (NULL);
 		buff[bytes] = '\0';
-		temp = update_temp(temp, buff);
+		temp = update_temp(buff, temp);
 	}
 	return (temp);
 }
@@ -152,7 +147,7 @@ char *get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
 	temp = read_to_temp(fd, temp);
-	line = extract_line_from_temp(line, temp);
+	line = extract_line_from_temp(temp);
 	temp = purge_line_from_temp(line, temp);
 	return (line);
 }
