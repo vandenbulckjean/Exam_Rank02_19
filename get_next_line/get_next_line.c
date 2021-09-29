@@ -6,12 +6,11 @@
 /*   By: jvanden- <jvanden-@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 16:03:57 by eperaita          #+#    #+#             */
-/*   Updated: 2021/09/28 16:06:06 by jvanden-         ###   ########.fr       */
+/*   Updated: 2021/09/29 14:24:31 by jvanden-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 int ft_strlen(char *str)
 {
@@ -108,9 +107,7 @@ char *extract_line_from_temp(char *temp)
 char *update_temp(char *buff, char *temp)
 {
 	char *new;
-	int i;
 
-	i = 0;
 	if (!temp)
 	{
 		temp = malloc(1);
